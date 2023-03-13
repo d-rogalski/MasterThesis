@@ -158,7 +158,6 @@ def convolutional_module(input_layer, filter):
 def ResNet34_model(input_shape, no_classes):
     # Input layer
     input_image = Input(input_shape)
-    input_image = ZeroPadding2D((3, 3))(input_image)
 
     # Initial layers
     init_layer = Conv2D(64, (7, 7), (2, 2), padding='same')(input_image)
@@ -203,7 +202,6 @@ def ResNet34_model(input_shape, no_classes):
 def ResNet18_model(input_shape, no_classes):
     # Input layer
     input_image = Input(input_shape)
-    input_image = ZeroPadding2D((3, 3))(input_image)
 
     # Initial layers
     init_layer = Conv2D(64, (7, 7), (2, 2), padding='same')(input_image)
@@ -231,7 +229,7 @@ def ResNet18_model(input_shape, no_classes):
     output = Dense(no_classes, activation=tf.nn.softmax)(output)
 
     # Model
-    model = Model([input_image], output, name='ResNet34')
+    model = Model([input_image], output, name='ResNet18')
     return model
 
 
