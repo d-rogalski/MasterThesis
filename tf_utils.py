@@ -1,4 +1,4 @@
-__name__ = 'Auxiliary functions'
+__name__ = 'Utility functions'
 
 def get_dataset_partitions(ds, train_split=0.8, val_split=0.1, test_split=0.1, shuffle=True, shuffle_size=10000, seed=None):
     """
@@ -157,3 +157,34 @@ def plot_prediction(i, predictions, images, labels, class_names, figsize=(10,4))
                                     class_names[true_label]))
     
     return f, axes
+
+def confusion_matrix(predictions, labels, no_classes):
+    import numpy as np
+    mat = np.zeros((no_classes, no_classes), np.int32)
+    for pred_batch, labels_batch in zip(predictions, labels):
+        for prediction, target in zip(pred_batch, labels_batch):
+            mat[target, np.argmax(prediction)] += 1
+
+    return mat
+
+def plot_confusion_matrix(conf_matrix, class_labels=None, figsize=(10, 10)):
+    import matplotlib.pyplot as plt
+    N = conf_matrix.shape[0]
+    MAX = conf_matrix.max().max()
+
+    fig, ax = plt.subplots(figsize=figsize)
+    ax.imshow(conf_matrix)
+    ax.set_xlabel('Prediction')
+    ax.set_ylabel('Target')
+
+    if class_labels != None:
+        ax.set_xticks(N)
+        ax.set_xticklabels(class_labels)
+        ax.set_yticks(N)
+        ax.set_yticklabels(class_labels)
+
+    for i in range(N):
+        for j in range(N):
+            c = 'k' if conf_matrix[i, j] > .75 * MAX else 'w'
+            ax.text(j, i, conf_matrix[i, j], ha='center', va='center', color=c)
+    
