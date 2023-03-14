@@ -159,6 +159,16 @@ def plot_prediction(i, predictions, images, labels, class_names, figsize=(10,4))
     return f, axes
 
 def confusion_matrix(predictions, labels, no_classes):
+    """
+    Constructs the confustion matrix based on provided predictions and target labels.
+    Arguments:
+        predictions: output of `model.predict` method
+        labels: target labels of the dataset (as list of batches)
+        no_classes: number of classes in the dataset
+    Returns:
+        mat: 2D numpy array where `mat[i, j]` is number of examples with label `i` predicted as label `j`
+    """
+
     import numpy as np
     mat = np.zeros((no_classes, no_classes), np.int32)
     for pred_batch, labels_batch in zip(predictions, labels):
@@ -168,6 +178,17 @@ def confusion_matrix(predictions, labels, no_classes):
     return mat
 
 def plot_confusion_matrix(conf_matrix, class_labels=None, figsize=(10, 10)):
+    """
+    Plots the confusion matrix.
+    Arguments:
+        conf_matrix: 2D numpy array, output of `confusion_matrix` function
+        class_labels: optional labels of classes for ticks (if None, it will show numbers)
+        figsize: size of figure
+    Returns:
+        fig: handler of figure
+        ax: handler of axes
+    """
+    
     import matplotlib.pyplot as plt
     N = conf_matrix.shape[0]
     MAX = conf_matrix.max().max()
@@ -187,4 +208,6 @@ def plot_confusion_matrix(conf_matrix, class_labels=None, figsize=(10, 10)):
         for j in range(N):
             c = 'k' if conf_matrix[i, j] > .75 * MAX else 'w'
             ax.text(j, i, conf_matrix[i, j], ha='center', va='center', color=c)
+
+    return fig, ax
     
