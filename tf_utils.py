@@ -197,10 +197,9 @@ def plot_confusion_matrix(conf_matrix, class_labels=None, figsize=(10, 10)):
 
     import matplotlib.pyplot as plt
     N = conf_matrix.shape[0]
-    MAX = conf_matrix.max().max()
 
     fig, ax = plt.subplots(figsize=figsize)
-    ax.imshow(conf_matrix)
+    i = ax.imshow(conf_matrix)
     ax.set_xlabel('Prediction')
     ax.set_ylabel('Target')
 
@@ -210,7 +209,7 @@ def plot_confusion_matrix(conf_matrix, class_labels=None, figsize=(10, 10)):
         ax.set_yticks(N)
         ax.set_yticklabels(class_labels)
 
-    plt.colorbar()
+    plt.colorbar(i)
 
     return fig, ax
     
