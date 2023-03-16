@@ -75,7 +75,7 @@ test_dataset = test_ds.cache().prefetch(buffer_size=AUTOTUNE)
 
 # Training
 num_classes = len(ds.class_names)
-model = tf.keras.models.Sequential([
+model1 = tf.keras.models.Sequential([
     tf.keras.layers.Conv2D(16, (3,3), padding='same', activation='relu', input_shape=(224,224,3)),
     tf.keras.layers.MaxPooling2D(2,2),
     tf.keras.layers.Conv2D(32, (3,3), padding='same',activation='relu'),
@@ -87,18 +87,37 @@ model = tf.keras.models.Sequential([
     tf.keras.layers.Dense(num_classes, activation=tf.nn.softmax)
 ])
 
-model.compile(
+model2 = tf.keras.models.Sequential([
+    tf.keras.layers.Conv2D(16, (3,3), padding='same', activation='relu', input_shape=(224,224,3)),
+    tf.keras.layers.MaxPooling2D(2,2),
+    tf.keras.layers.Conv2D(32, (3,3), padding='same',activation='relu'),
+    tf.keras.layers.MaxPooling2D(2,2),
+    tf.keras.layers.Conv2D(64, (3,3), padding='same',activation='relu'),
+    tf.keras.layers.MaxPooling2D(2,2),
+    tf.keras.layers.Flatten(),
+    tf.keras.layers.Dense(512, activation='relu'),
+    tf.keras.layers.Dense(num_classes, activation=tf.nn.softmax)
+])
+
+model1.compile(
     optimizer='adam',
     loss='sparse_categorical_crossentropy',
     metrics=['accuracy']
 )
 
-model.summary()
+model2.compile(
+    optimizer='adam',
+    loss='sparse_categorical_crossentropy',
+    metrics=['accuracy']
+)
 
 EPOCHS = 10
 t1 = time.time()
-history = model.fit(train_dataset,epochs=EPOCHS,steps_per_epoch=int(np.ceil(total_train / float(BATCH_SIZE) )),validation_steps=int(np.ceil(total_valid / float(BATCH_SIZE))),validation_data=valid_dataset)
+history = model1.fit(train_dataset,epochs=EPOCHS,steps_per_epoch=int(np.ceil(total_train / float(BATCH_SIZE) )),validation_steps=int(np.ceil(total_valid / float(BATCH_SIZE))),validation_data=valid_dataset)
 print(f"Elapsed: {time.time()-t1}")
+
+for i in range(EPOCHS):
+   model2.fit(train_dataset, epochs=1,steps_per_epoch=int(np.ceil(total_train / float(BATCH_SIZE) )),validation_steps=int(np.ceil(total_valid / float(BATCH_SIZE))),validation_data=valid_dataset)
 
 acc = history.history['accuracy']
 val_acc = history.history['val_accuracy']
