@@ -159,21 +159,47 @@ def plot_prediction(i, predictions, images, labels, class_names, figsize=(10,4))
     return f, axes
 
 def confusion_matrix(predictions, labels, no_classes):
+    """
+    Constructs the confustion matrix based on provided predictions and target labels.
+    Arguments:
+        predictions: output of `model.predict` method
+        labels: target labels of the dataset (as list of batches)
+        no_classes: number of classes in the dataset
+    Returns:
+        mat: 2D numpy array where `mat[i, j]` is part of examples with label `i` predicted as label `j`
+    """
+
     import numpy as np
-    mat = np.zeros((no_classes, no_classes), np.int32)
+
+    mat = np.zeros((no_classes, no_classes), np.float32)
+    normalization = np.zeros(no_classes, np.int32)
     for pred_batch, labels_batch in zip(predictions, labels):
         for prediction, target in zip(pred_batch, labels_batch):
+            normalization[target] += 1
             mat[target, np.argmax(prediction)] += 1
+
+    for i in range(no_classes):
+        mat[i, :] /= normalization[i]
 
     return mat
 
 def plot_confusion_matrix(conf_matrix, class_labels=None, figsize=(10, 10)):
+    """
+    Plots the confusion matrix.
+    Arguments:
+        conf_matrix: 2D numpy array, output of `confusion_matrix` function
+        class_labels: optional labels of classes for ticks (if None, it will show numbers)
+        figsize: size of figure
+    Returns:
+        fig: handler of figure
+        ax: handler of axes
+    """
+
     import matplotlib.pyplot as plt
     N = conf_matrix.shape[0]
-    MAX = conf_matrix.max().max()
 
     fig, ax = plt.subplots(figsize=figsize)
-    ax.imshow(conf_matrix)
+    i = ax.imshow(conf_matrix)
     ax.set_xlabel('Prediction')
     ax.set_ylabel('Target')
 
@@ -183,8 +209,7 @@ def plot_confusion_matrix(conf_matrix, class_labels=None, figsize=(10, 10)):
         ax.set_yticks(N)
         ax.set_yticklabels(class_labels)
 
-    for i in range(N):
-        for j in range(N):
-            c = 'k' if conf_matrix[i, j] > .75 * MAX else 'w'
-            ax.text(j, i, conf_matrix[i, j], ha='center', va='center', color=c)
+    plt.colorbar(i)
+
+    return fig, ax
     
