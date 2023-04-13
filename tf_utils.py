@@ -83,12 +83,12 @@ def plot_history(history, metric='accuracy', withValidation=True, figsize=(8,4))
     
     f, (ax1, ax2) = plt.subplots(nrows=1, ncols=2, figsize=figsize)
 
-    ax1.plot(epochs_range, acc, label='Training')
+    ax1.plot(epochs_range, acc, '.-', label='Training')
     ax1.set_title(f'{title} {metric}')
     ax1.set_xlabel('Epoch')
     ax1.set_ylabel(metric.capitalize())
 
-    ax2.plot(epochs_range, loss, label='Training loss')   
+    ax2.plot(epochs_range, loss, '.-', label='Training')   
     ax2.set_title(f'{title} loss')
     ax2.set_xlabel('Epoch')
     ax2.set_ylabel('Loss')
@@ -97,10 +97,10 @@ def plot_history(history, metric='accuracy', withValidation=True, figsize=(8,4))
         val_acc = history.history['val_'+metric]
         val_loss = history.history['val_loss']
 
-        ax1.plot(epochs_range, val_acc, label='Validation')
+        ax1.plot(epochs_range, val_acc, '.-', label='Validation')
         ax1.legend(loc='lower right')
         
-        ax2.plot(epochs_range, val_loss, label='Validation')
+        ax2.plot(epochs_range, val_loss, '.-', label='Validation')
         ax2.legend(loc='upper right')
 
     return f, [ax1, ax2]
@@ -158,6 +158,7 @@ def plot_prediction(i, predictions, images, labels, class_names, figsize=(10,4))
     
     return f, axes
 
+
 def confusion_matrix(predictions, labels, no_classes):
     """
     Constructs the confustion matrix based on provided predictions and target labels.
@@ -168,7 +169,6 @@ def confusion_matrix(predictions, labels, no_classes):
     Returns:
         mat: 2D numpy array where `mat[i, j]` is part of examples with label `i` predicted as label `j`
     """
-
     import numpy as np
 
     mat = np.zeros((no_classes, no_classes), np.float32)
@@ -183,6 +183,7 @@ def confusion_matrix(predictions, labels, no_classes):
 
     return mat
 
+
 def plot_confusion_matrix(conf_matrix, class_labels=None, figsize=(10, 10)):
     """
     Plots the confusion matrix.
@@ -194,7 +195,6 @@ def plot_confusion_matrix(conf_matrix, class_labels=None, figsize=(10, 10)):
         fig: handler of figure
         ax: handler of axes
     """
-
     import matplotlib.pyplot as plt
     N = conf_matrix.shape[0]
 
@@ -213,3 +213,26 @@ def plot_confusion_matrix(conf_matrix, class_labels=None, figsize=(10, 10)):
 
     return fig, ax
     
+
+def save_json(path, d):
+    '''
+    Save dictionary into json file on given path.
+    Arguments:
+        path: path to the file that should be created (name included)
+        d: dictionary with info to save
+    '''
+    import json
+    with open(path, 'w') as src:
+        json.dump(d, src)
+
+
+def load_json(path):
+    '''
+    Load dictionary from json file on a given path.
+    Arguments:
+        path: path to the file that should be loaded
+    '''
+    import json
+    with open(path, 'r') as src:
+        d = json.load(src)
+        return d
