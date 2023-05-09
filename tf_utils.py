@@ -169,19 +169,14 @@ def confusion_matrix(predictions, labels, no_classes):
         `no_classes`: number of classes in the dataset
 
     Returns:
-        `mat`: 2D numpy array where `mat[i, j]` is part of examples with label `i` predicted as label `j`
+        `mat`: 2D numpy array where `mat[i, j]` is number of examples with label `i` predicted as label `j`
     """
     import numpy as np
 
-    mat = np.zeros((no_classes, no_classes), np.float32)
-    normalization = np.zeros(no_classes, np.int32)
+    mat = np.zeros((no_classes, no_classes), np.int32)
     for pred_batch, labels_batch in zip(predictions, labels):
         for prediction, target in zip(pred_batch, labels_batch):
-            normalization[target] += 1
             mat[target, np.argmax(prediction)] += 1
-
-    for i in range(no_classes):
-        mat[i, :] /= normalization[i]
 
     return mat
 
