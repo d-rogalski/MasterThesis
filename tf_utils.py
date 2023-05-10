@@ -181,12 +181,13 @@ def confusion_matrix(predictions, labels, no_classes):
     return mat
 
 
-def plot_confusion_matrix(conf_matrix, class_labels=None, figsize=(10, 10)):
+def plot_confusion_matrix(conf_matrix, normalize=True, class_labels=None, figsize=(10, 10)):
     """
     Plots the confusion matrix.
 
     Arguments:
         `conf_matrix`: 2D numpy array, output of `confusion_matrix` function
+        `normalize`: whether to display counts or percentages of the amount of images in given class
         `class_labels`: optional labels of classes for ticks (if None, it will show numbers)
         `figsize`: size of figure
 
@@ -196,6 +197,11 @@ def plot_confusion_matrix(conf_matrix, class_labels=None, figsize=(10, 10)):
     """
     import matplotlib.pyplot as plt
     N = conf_matrix.shape[0]
+
+    if normalize:
+        conf_matrix = conf_matrix.astype(float)
+        for i in range(N):
+            conf_matrix[i, :] = conf_matrix[i, :] / conf_matrix[i, :].sum()
 
     fig, ax = plt.subplots(figsize=figsize)
     i = ax.imshow(conf_matrix)
