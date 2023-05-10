@@ -60,7 +60,7 @@ def plot_history(history, metric='accuracy', withValidation=True, figsize=(8,4))
     Plots loss and chosen metric history from training.
 
     Arguments:
-        `history`: output of `model.fit` method
+        `history`: history element of `model.fit` method's output
         `metric`: name of metric chosen in model compilation
         `withValidation`: wheter to plot validation history
         `figsize`: size of generated figure
@@ -70,13 +70,14 @@ def plot_history(history, metric='accuracy', withValidation=True, figsize=(8,4))
         `axes`: list of axes' handles
         
     Example:
-        `plot_history(history)`
+        `h = model.fit(...)`
+        `plot_history(h.history)`
         `plt.show()`
     """
     import matplotlib.pyplot as plt
 
-    acc = history.history[metric]
-    loss = history.history['loss']
+    acc = history[metric]
+    loss = history['loss']
     epochs_range = range(1, len(acc) + 1)
 
     title = 'Training' + (' and validation' if withValidation else ' ')
@@ -94,8 +95,8 @@ def plot_history(history, metric='accuracy', withValidation=True, figsize=(8,4))
     ax2.set_ylabel('Loss')
 
     if withValidation:
-        val_acc = history.history['val_'+metric]
-        val_loss = history.history['val_loss']
+        val_acc = history['val_'+metric]
+        val_loss = history['val_loss']
 
         ax1.plot(epochs_range, val_acc, '.-', label='Validation')
         ax1.legend(loc='lower right')
